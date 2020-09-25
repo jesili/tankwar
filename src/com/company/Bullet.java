@@ -1,10 +1,9 @@
 package com.company;
 
-import tankabstractfactory.BaseBullet;
 
 import java.awt.*;
 
-public class Bullet extends BaseBullet {
+public class Bullet {
     private static final int SPEED = 10;
     public static int WIDTH = ResourceMGR.bulletL.getWidth(), HEIGHT = ResourceMGR.bulletL.getHeight();
     Rectangle rect = new Rectangle();
@@ -89,7 +88,8 @@ public class Bullet extends BaseBullet {
             this.die();
             int ex = tank.getX() + tank.WIDTH/2 - Explode.WIDTH/2;
             int ey = tank.getY() + tank.HEIGHT/2 - Explode.HEIGHT/2;
-            tf.explodes.add(tf.gf.createExplode(ex, ey, tf));
+            Explode e = new Explode(ex, ey, tf);
+            tf.explodes.add(e);
         }
     }
 

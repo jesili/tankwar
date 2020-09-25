@@ -1,10 +1,5 @@
 package com.company;
 
-import tankabstractfactory.BaseExplode;
-import tankabstractfactory.DefaultFactory;
-import tankabstractfactory.GameFactory;
-import tankabstractfactory.RectFactory;
-
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -20,9 +15,8 @@ public class TankFrame extends Frame {
     Tank myTank = new Tank(200, 400, Direc.DOWN, Group.GOOD,this);
     public List<Bullet> bullets = new ArrayList<>();
     public List<Tank> tanks = new ArrayList<>();
-    public List<BaseExplode> explodes = new ArrayList<>();
+    public List<Explode> explodes = new ArrayList<>();
 
-    GameFactory gf = new DefaultFactory();
     static final int GAME_WIDTH = Integer.parseInt((String) Objects.requireNonNull(PropertyMgr.get("gameWidth"))),
             GAME_HEIGHT = Integer.parseInt((String) Objects.requireNonNull(PropertyMgr.get("gameHeight")));
     public TankFrame(){

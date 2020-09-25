@@ -1,12 +1,10 @@
 package com.company;
 
-import tankabstractfactory.BaseTank;
-
 import java.awt.*;
-import java.lang.reflect.InvocationTargetException;
+
 import java.util.Random;
 
-public class Tank extends BaseTank {
+public class Tank{
     int x, y;
 
     Direc direc = Direc.DOWN;
@@ -19,7 +17,7 @@ public class Tank extends BaseTank {
     TankFrame tf = null;
     private boolean living = true;
     Group group = Group.BAD;
-    FireStrategy fs;
+
     public int getX() {
         return x;
     }
@@ -72,7 +70,6 @@ public class Tank extends BaseTank {
         this.rect.height = HEIGHT;
     }
 
-    @Override
     public void paint(Graphics g) {
         if (!living) tf.tanks.remove(this);
         switch (direc){
@@ -134,18 +131,9 @@ public class Tank extends BaseTank {
     }
 
     public void fire() {
-        if (this.group == Group.GOOD){
-            String goodFSName = (String)PropertyMgr.get("goodFS");
-            try {
-                fs = (FireStrategy)Class.forName(goodFSName).getDeclaredConstructor().newInstance();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        else {
-            fs = new DefaultFireStrategy();
-        }
-        fs.fire(this);
+        int bx = this.x + Tank.WIDTH/2 - Bullet.WIDTH/2;
+        int by = this.y + Tank.HEIGHT/2 - Bullet.HEIGHT/2;
+        new Bullet(bx, by, this.direc, this.group, this.tf);
     }
 
     public void die() {
