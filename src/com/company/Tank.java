@@ -14,7 +14,7 @@ public class Tank{
     private Random random = new Random();
 
     private boolean moving = true;
-    TankFrame tf = null;
+    GameModel gm;
     private boolean living = true;
     Group group = Group.BAD;
 
@@ -58,11 +58,11 @@ public class Tank{
         this.direc = direc;
     }
 
-    public Tank(int x, int y, Direc direc, Group group, TankFrame tf) {
+    public Tank(int x, int y, Direc direc, Group group, GameModel gm) {
         this.x = x;
         this.y = y;
         this.direc = direc;
-        this.tf = tf;
+        this.gm = gm;
         this.group = group;
         this.rect.x = this.x;
         this.rect.y = this.y;
@@ -71,7 +71,7 @@ public class Tank{
     }
 
     public void paint(Graphics g) {
-        if (!living) tf.tanks.remove(this);
+        if (!living) gm.tanks.remove(this);
         switch (direc){
             case LEFT:
                 g.drawImage(this.group == Group.GOOD ? ResourceMGR.goodTankL: ResourceMGR.badTankL, x, y, null);
@@ -133,7 +133,7 @@ public class Tank{
     public void fire() {
         int bx = this.x + Tank.WIDTH/2 - Bullet.WIDTH/2;
         int by = this.y + Tank.HEIGHT/2 - Bullet.HEIGHT/2;
-        new Bullet(bx, by, this.direc, this.group, this.tf);
+        new Bullet(bx, by, this.direc, this.group, this.gm);
     }
 
     public void die() {
