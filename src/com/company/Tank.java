@@ -1,23 +1,30 @@
 package com.company;
 
+import decorator.RectDecorator;
+import decorator.TailDecorator;
+
 import java.awt.*;
 
 import java.util.Random;
 
-public class Tank{
-    int x, y;
+public class Tank extends GameObject{
+
+    int oldx, oldy;
 
     Direc direc = Direc.DOWN;
     private static final int SPEED = 3;
     public static int WIDTH = ResourceMGR.goodTankU.getWidth(), HEIGHT = ResourceMGR.goodTankU.getHeight();
+
     Rectangle rect = new Rectangle();
     private Random random = new Random();
 
     private boolean moving = true;
-    GameModel gm;
+
     private boolean living = true;
     Group group = Group.BAD;
-
+    public Rectangle getRect() {
+        return rect;
+    }
     public int getX() {
         return x;
     }
@@ -58,20 +65,21 @@ public class Tank{
         this.direc = direc;
     }
 
-    public Tank(int x, int y, Direc direc, Group group, GameModel gm) {
+    public Tank(int x, int y, Direc direc, Group group) {
         this.x = x;
         this.y = y;
         this.direc = direc;
-        this.gm = gm;
+
         this.group = group;
         this.rect.x = this.x;
         this.rect.y = this.y;
         this.rect.width = WIDTH;
         this.rect.height = HEIGHT;
+        GameModel.getInstance().add(this);
     }
 
     public void paint(Graphics g) {
-        if (!living) gm.tanks.remove(this);
+        if (!living) GameModel.getInstance().remove(this);
         switch (direc){
             case LEFT:
                 g.drawImage(this.group == Group.GOOD ? ResourceMGR.goodTankL: ResourceMGR.badTankL, x, y, null);
@@ -91,7 +99,19 @@ public class Tank{
         move();
     }
 
+    @Override
+    public int getWidth() {
+        return WIDTH;
+    }
+
+    @Override
+    public int getHeight() {
+        return HEIGHT;
+    }
+
     private void move(){
+        oldx = x;
+        oldy = y;
         if (!moving) return;
         switch (direc){
             case LEFT:
@@ -133,10 +153,24 @@ public class Tank{
     public void fire() {
         int bx = this.x + Tank.WIDTH/2 - Bullet.WIDTH/2;
         int by = this.y + Tank.HEIGHT/2 - Bullet.HEIGHT/2;
-        new Bullet(bx, by, this.direc, this.group, this.gm);
+        GameModel.getInstance().add(new RectDecorator(new TailDecorator(new Bullet(bx, by, this.direc, this.group))));
     }
 
     public void die() {
         this.living = false;
+    }
+
+    public void changeDirec(){
+
+        Direc randDir = Direc.values()[random.nextInt(4)];
+        while (this.direc == randDir){
+            randDir = Direc.values()[random.nextInt(4)];
+        }
+        this.direc = randDir;
+    }
+
+    public void back(){
+        x = oldx;
+        y = oldy;
     }
 }

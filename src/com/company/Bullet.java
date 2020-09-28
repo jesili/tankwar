@@ -3,40 +3,41 @@ package com.company;
 
 import java.awt.*;
 
-public class Bullet {
+public class Bullet extends GameObject{
     private static final int SPEED = 10;
     public static int WIDTH = ResourceMGR.bulletL.getWidth(), HEIGHT = ResourceMGR.bulletL.getHeight();
     Rectangle rect = new Rectangle();
-    int x, y;
     private Direc direc;
     private boolean living = true;
-    private GameModel gm = null;
     private Group group = Group.BAD;
 
     public Group getGroup() {
         return group;
     }
 
+    public Rectangle getRect() {
+        return rect;
+    }
+
     public void setGroup(Group group) {
         this.group = group;
     }
 
-    public Bullet(int x, int y, Direc direc, Group group, GameModel gm) {
+    public Bullet(int x, int y, Direc direc, Group group) {
         this.x = x;
         this.y = y;
         this.direc = direc;
-        this.gm = gm;
         this.group = group;
         this.rect.x = this.x;
         this.rect.y = this.y;
         this.rect.width = WIDTH;
         this.rect.height = HEIGHT;
-        gm.bullets.add(this);
+        GameModel.getInstance().add(this);
     }
 
     public void paint(Graphics g) {
         if (!living){
-            gm.bullets.remove(this);
+            GameModel.getInstance().remove(this);
         }
         switch (direc){
             case LEFT:
@@ -53,6 +54,16 @@ public class Bullet {
                 break;
         }
         move();
+    }
+
+    @Override
+    public int getWidth() {
+        return WIDTH;
+    }
+
+    @Override
+    public int getHeight() {
+        return HEIGHT;
     }
 
     private void move() {
@@ -77,23 +88,7 @@ public class Bullet {
         if (x < 0 || y < 0 || x > TankFrame.GAME_WIDTH || y > TankFrame.GAME_HEIGHT) living = false;
     }
 
-
-    public void collideWith(Tank tank) {
-        if (this.group == tank.getGroup()) return;
-        //TODO: 用一个rect来记录子弹位置
-//        Rectangle rect1 = new Rectangle(this.x, this.y, WIDTH, HEIGHT);
-//        Rectangle rect2 = new Rectangle(tank.getX(), tank.getY(), Tank.WIDTH, Tank.HEIGHT);
-        if (this.rect.intersects(tank.rect)){
-            tank.die();
-            this.die();
-            int ex = tank.getX() + tank.WIDTH/2 - Explode.WIDTH/2;
-            int ey = tank.getY() + tank.HEIGHT/2 - Explode.HEIGHT/2;
-            Explode e = new Explode(ex, ey, gm);
-            gm.explodes.add(e);
-        }
-    }
-
-    private void die() {
+    public void die() {
         this.living = false;
     }
 }
